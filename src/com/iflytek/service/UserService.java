@@ -4,7 +4,10 @@ import com.iflytek.dao.UserDao;
 import com.iflytek.pojo.User;
 
 public class UserService {
+    private static User currentUser;
     private UserDao userDao = new UserDao();
+    // 数组--》集合list--》set--》map
+    // 存取：存：都可以，取：直接取   单系统（一次只允许一个用户登录）
 
     /**
      * 登录
@@ -18,7 +21,12 @@ public class UserService {
         if (user == null) {
             return 0;
         }
+        currentUser = user;
         return user.getType();
+    }
+
+    public static User getCurrentUesr() {
+        return currentUser;
     }
 
     public void order() {

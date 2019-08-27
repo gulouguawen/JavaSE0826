@@ -7,4 +7,5 @@ public class StringUtils {
         cs[0] -= 32; // a 97 A 65
         return String.valueOf(cs);
     }
+
 }

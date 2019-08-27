@@ -1,10 +1,12 @@
 package com.iflytek.pojo;
 
+import java.lang.reflect.Field;
+
 public class User {
     private int id;
     private int type;
     private String username;
-    private String password;
+    public String password;
     private String name;
     private String email;
 
@@ -61,4 +63,20 @@ public class User {
         return "User [id=" + id + ", type=" + type + ", username=" + username + ", password=" + password + ", name="
                 + name + ", email=" + email + "]";
     }
+
+    public static void main(String[] args) throws InstantiationException, IllegalAccessException {
+        Class clazz = User.class;
+        User u = (User) clazz.newInstance();
+        u.setId(44444);
+        Field[] fields = clazz.getDeclaredFields(); // 返回所有类型的
+        for (Field f : fields) {
+            System.out.println(f.getName() + "----" + f.getType() + "---");
+        }
+        System.out.println("****************************");
+        fields = clazz.getFields(); // 只能访问公有的
+        for (Field f : fields) {
+            System.out.println(f.getName() + "----" + f.getType() + "---");
+        }
+    }
+
 }

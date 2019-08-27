@@ -11,7 +11,8 @@ public class UserUI {
 
     public void init() {
         System.out.println("欢迎进入普通用户界面");
-        System.out.println("【操作】：【1】查询商品【2】下单\n请输入您要的操作：");
+        System.out.println("【操作】：【1】查询商品【2】下单");
+        System.out.println("请输入您要的操作：");
         String opt = sc.nextLine();
 
         switch (opt) {

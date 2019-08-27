@@ -1,13 +1,13 @@
 package com.iflytek.ui;
 
-
-import com.iflytek.service.UserService;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import com.iflytek.service.UserService;
+
 public class UI {
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         UserService userService = new UserService();
@@ -24,21 +24,20 @@ public class UI {
          * 1) 登录功能  如果已经登录，不需要重复登录  --- 放到最后做
          * 2) 用户名密码失败三次，1分钟内不允许登录
          */
-        System.out.println("欢迎访问XXX商城");
+        System.out.println("欢迎使用XXX商城系统");
         Map<String, Integer> lgLoseMap = new HashMap<String, Integer>();
 
         while (true) {
-
-            System.out.println("请输入您的用户名:");
+            System.out.println("请输入您的用户名：");
             String username = sc.nextLine();
-            System.out.println("请输入您的密码:");
+            System.out.println("请输入您的密码：");
             String password = sc.nextLine();
 
             // 查询
             int rlt = userService.login(username, password);
             if (rlt == 0) {
                 System.out.println("登录失败，请重新登录");
-                Integer times = lgLoseMap.get(username);
+                Integer times = lgLoseMap.get(username); // list 存  取？ 用户名，用户登录失败次数
                 if (times == null) {
                     lgLoseMap.put(username, 1);
                 } else if (times == 3) {

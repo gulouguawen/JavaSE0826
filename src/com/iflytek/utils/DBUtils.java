@@ -1,43 +1,24 @@
 package com.iflytek.utils;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.iflytek.pojo.Test;
 import com.iflytek.pojo.User;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.sql.*;
-import java.util.List;
-
+/**
+ * T表示 任意类型  Object
+ *
+ * @param <T>
+ * @author admin
+ */
 public class DBUtils<T> {
-    public T uniqQuery(String params[], Class<T> clazz) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
-
-        List<User> list = null;
-        Connection conn = null;
-        String sql = "select * from user where username = ? and password = ?";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        int size = params.length;
-        for (int i = 0; i < size; i++) {
-            pstmt.setObject(i + 1, params[i]);
-        }
-        ResultSet rs = pstmt.executeQuery();
-
-        // 反射
-        T in = (T) clazz.newInstance();
-
-        if (rs.next()) {
-            // rs --》 对象T
-            Field[] fields = clazz.getDeclaredFields();
-            for (int j = 0; j < fields.length; j++) {
-                Method method = clazz.getDeclaredMethod("set" + fields[j].getName(), fields[j].getType());
-                method.invoke(in, rs.getObject(fields[j].getName()));
-            }
-        }
-        // 资源关闭操作
-        // ...
-
-        return in;
-    }
 
     public List<T> Query(String params[]) {
         return null;
@@ -67,6 +48,7 @@ public class DBUtils<T> {
      *
      */
 
+
     static {
         try {
             Class.forName(DRIVER);
@@ -75,6 +57,15 @@ public class DBUtils<T> {
         }
     }
 
+    /**
+     * T 就是一个Object对象；可以代表任意类型
+     *
+     * @param obj
+     * @param clazz
+     * @param sql
+     * @return
+     * @throws Exception
+     */
     public T uniqQuery(Object[] obj, Class<T> clazz, String sql) throws Exception {
         // 建立连接
         Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
@@ -100,13 +91,62 @@ public class DBUtils<T> {
         return t;
     }
 
+    // 改造uniqQuery函数，让他返回集合
+    public List<T> query(Object[] obj, Class<T> clazz, String sql) throws Exception {
+        List<T> list = new ArrayList<T>();
+        // 建立连接
+        Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+
+        // Statement  --》调用数据库的执行程序  --> 预编译：防止sql注入，加快sql执行
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        for (int i = 0; i < obj.length; i++) {
+            pstmt.setObject(i + 1, obj[i]);
+        }
+
+        // 执行获取到一个结果集
+        ResultSet rs = pstmt.executeQuery();
+        T t = null;
+        while (rs.next()) {
+            // 此方法其实就是new一个对象出来
+            t = clazz.newInstance();
+            Field[] fields = clazz.getDeclaredFields();
+            for (Field f : fields) {
+                Method m = clazz.getDeclaredMethod("set" + StringUtils.toUpcaseFirst(f.getName()), f.getType());
+                m.invoke(t, rs.getObject(f.getName()));  //ORM hibernate mybatis -->关系映射
+            }
+            list.add(t);
+        }
+        return list;
+    }
+
+    // 改造insert语句  不要求看很明白
+    public int insert(Object[] obj, Class<T> clazz, String sql) throws Exception {
+        // 建立连接
+        Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+
+        // Statement  --》调用数据库的执行程序  --> 预编译：防止sql注入，加快sql执行
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        for (int i = 0; i < obj.length; i++) {
+            pstmt.setObject(i + 1, obj[i]);
+        }
+        return pstmt.executeUpdate();
+    }
+
     public static void main(String[] args) throws Exception {
         String sql = "select id, username, password, name, email, type from user where username = ? and password = ? ";
         User user = new DBUtils<User>().uniqQuery(new Object[]{"admin", "123456"}, User.class, sql);
         System.out.println(user);
 
-        sql = "select id, name from user where id = ? ";
+        sql = "select id, name from test where id = ? ";
         Test test = new DBUtils<Test>().uniqQuery(new Object[]{3}, Test.class, sql);
         System.out.println(test);
+    }
+
+    public static void print(List list) {
+        System.out.println("******************************");
+        for (Object obj : list) {
+            System.out.println(obj);
+        }
+        System.out.println("******************************");
     }
 }
