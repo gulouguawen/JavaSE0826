@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.iflytek.pojo.Product;
 import com.iflytek.pojo.ProductType;
@@ -34,6 +36,16 @@ public class AdminUI {
                 String name = sc.nextLine();
 
                 // 封装数据：定义一个对象，将数据库product_type封装成对象
+                // 思考：如果name为 " " ？ 或者说它有特殊字符？ \在字符串当中 是一个特殊字符 表示“转义”
+                String reg = "\\s*";
+                Pattern p = Pattern.compile(reg);
+                Matcher m = p.matcher(name);
+                boolean b = m.matches();
+                if (b) {
+                    System.out.println("对不起，您输入的商品分类的格式有问题，不能为空或空字符串");
+                    break;
+                }
+
                 ProductType pt = new ProductType();
                 pt.setName(name);
                 pt.setCreatorName(UserService.getCurrentUesr().getName());
@@ -46,11 +58,12 @@ public class AdminUI {
                 } else {
                     System.out.println("对不起，您录入失败了");
                 }
+                // ---END 流程已经结束
 
-                // 商品分类的信息
+                // 商品分类的信息  -- 开发阶段 必须要加的
                 System.out.println("商品分类信息如下：");
                 List<ProductType> list = ptService.queryAll();
-                DBUtils.print(list);
+                DBUtils.print(list); // 给你看看 数据库的数据有没有错误  业务代码错误了？
                 break;
             case "2":
                 /**
@@ -61,6 +74,7 @@ public class AdminUI {
                  *
                  */
                 // 差一个 product_type_id
+                // 界面初始化： 初始化界面上的数据
                 System.out.print("请选择您要录入商品的商品分类：");
                 List<ProductType> l = ptService.queryAll();
                 Map<String, Integer> xhTypeId = new HashMap<String, Integer>();
@@ -94,6 +108,8 @@ public class AdminUI {
                 product.setCreator(UserService.getCurrentUesr().getId());
                 product.setType(typeId);
                 rlt = productService.insertProduct(product);
+                // productService.insertProduct(String brand,String productName, ...)
+                // productService.insertProduct(null, String productName, ...)
                 if (rlt > 0) {
                     System.out.println("管理员成功录入" + productName + "的商品");
                 } else {

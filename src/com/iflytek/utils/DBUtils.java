@@ -25,10 +25,10 @@ public class DBUtils<T> {
     }
 
 
-    static final String USERNAME = "root";
-    static final String PASSWORD = "sy205919";
-    static final String DRIVER = "com.mysql.jdbc.Driver";
-    static final String URL = "jdbc:mysql://localhost:3306/java0826?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false";
+    public static final String USERNAME = "root";
+    public static final String PASSWORD = "sy205919";
+    public static final String DRIVER = "com.mysql.jdbc.Driver";
+    public static final String URL = "jdbc:mysql://localhost:3306/java0826?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false";
     // 加载驱动
 
     /**
@@ -72,9 +72,12 @@ public class DBUtils<T> {
 
         // Statement  --》调用数据库的执行程序  --> 预编译：防止sql注入，加快sql执行
         PreparedStatement pstmt = conn.prepareStatement(sql);
-        for (int i = 0; i < obj.length; i++) {
-            pstmt.setObject(i + 1, obj[i]);
+        if (obj != null) {
+            for (int i = 0; i < obj.length; i++) {
+                pstmt.setObject(i + 1, obj[i]);
+            }
         }
+
 
         // 执行获取到一个结果集
         ResultSet rs = pstmt.executeQuery();
@@ -99,8 +102,10 @@ public class DBUtils<T> {
 
         // Statement  --》调用数据库的执行程序  --> 预编译：防止sql注入，加快sql执行
         PreparedStatement pstmt = conn.prepareStatement(sql);
-        for (int i = 0; i < obj.length; i++) {
-            pstmt.setObject(i + 1, obj[i]);
+        if (obj != null) { // 代码健壮性
+            for (int i = 0; i < obj.length; i++) {
+                pstmt.setObject(i + 1, obj[i]);
+            }
         }
 
         // 执行获取到一个结果集
@@ -128,6 +133,22 @@ public class DBUtils<T> {
         PreparedStatement pstmt = conn.prepareStatement(sql);
         for (int i = 0; i < obj.length; i++) {
             pstmt.setObject(i + 1, obj[i]);
+        }
+        return pstmt.executeUpdate();
+    }
+
+
+    // 改造insert语句  不要求看很明白
+    public int update(Object[] obj, Class<T> clazz, String sql) throws Exception {
+        // 建立连接
+        Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+
+        // Statement  --》调用数据库的执行程序  --> 预编译：防止sql注入，加快sql执行
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        if (obj != null) {
+            for (int i = 0; i < obj.length; i++) {
+                pstmt.setObject(i + 1, obj[i]);
+            }
         }
         return pstmt.executeUpdate();
     }

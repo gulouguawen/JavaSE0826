@@ -58,12 +58,6 @@ public class User {
         this.email = email;
     }
 
-    @Override
-    public String toString() {
-        return "User [id=" + id + ", type=" + type + ", username=" + username + ", password=" + password + ", name="
-                + name + ", email=" + email + "]";
-    }
-
     public static void main(String[] args) throws InstantiationException, IllegalAccessException {
         Class clazz = User.class;
         User u = (User) clazz.newInstance();
@@ -77,6 +71,12 @@ public class User {
         for (Field f : fields) {
             System.out.println(f.getName() + "----" + f.getType() + "---");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", type=" + type + ", username=" + username + ", password=" + password + ", name="
+                + name + ", email=" + email + "]";
     }
 
 }
