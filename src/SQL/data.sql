@@ -1,15 +1,12 @@
 /*
 Navicat MySQL Data Transfer
-
 Source Server         : localhost_sy205919
 Source Server Version : 80013
 Source Host           : localhost:3306
 Source Database       : java0826
-
 Target Server Type    : MYSQL
 Target Server Version : 80013
 File Encoding         : 65001
-
 Date: 2019-08-26 10:11:43
 */
 
