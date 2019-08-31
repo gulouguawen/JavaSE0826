@@ -25,10 +25,7 @@ public class AdminUI {
 
     public void init() {
         System.out.println("欢迎进入管理员界面");
-        System.out.println("#
-# 【操作】：#
-# 【1】录入商品分类#
-# 【2】录入商品");
+        System.out.println("#【操作】：#【1】录入商品分类#【2】录入商品");
         System.out.println("请输入您要的操作：");
         String opt = sc.nextLine();
 
@@ -82,8 +79,7 @@ public class AdminUI {
                 List<ProductType> l = ptService.queryAll();
                 Map<String, Integer> xhTypeId = new HashMap<String, Integer>();
                 for (int i = 0; i < l.size(); i++) {
-                    System.out.print("#
-# 【" + (i + 1) + "】" + l.get(i).getName());
+                    System.out.print("【" + (i + 1) + "】" + l.get(i).getName());
                     xhTypeId.put((i + 1) + "", l.get(i).getId());
                 }
                 System.out.println("");
