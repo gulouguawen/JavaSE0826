@@ -28,7 +28,10 @@ public class UserUI {
 
     public void init() {
         System.out.println("欢迎进入普通用户界面");
-        System.out.println("【操作】：【1】查询商品【2】下单");
+        System.out.println("#
+# 【操作】：#
+# 【1】查询商品#
+# 【2】下单");
         System.out.println("请输入您要的操作：");
         String opt = sc.nextLine();
 
@@ -41,7 +44,9 @@ public class UserUI {
             case "2":
                 // 1.系统要初始化商品（销量比较高的），选择商品编号，并使用逗号隔开
                 // 1.系统要初始化化商品分类，根据商品分类列出所有商品，用户选择商品编号，并使用逗号隔开
-                System.out.println("【1】常见商品【2】分类商品");
+                System.out.println("#
+# 【1】常见商品#
+# 【2】分类商品");
                 opt = sc.nextLine();
                 if (opt.equals("1")) {
                     /**
@@ -64,7 +69,8 @@ public class UserUI {
                     // 初始化出来常见商品，供用户选择购买
                     DBUtils.print(list);
                     // 目的：向订单表和订单明细表插入数据
-                    System.out.println("请选择您要购买的商品：【id:数量】如 1:2,2:3...");
+                    System.out.println("请选择您要购买的商品：#
+# 【id:数量】如 1:2,2:3...");
 
                     // [a-zA-z]\w{5,19}  用户名长度在6到20位，数字大小写字母，首字母不能为数字
                     String cart = sc.nextLine();
@@ -73,7 +79,8 @@ public class UserUI {
                     Matcher m = p.matcher(cart);
                     boolean b = m.matches();
                     if (!b) {
-                        System.out.println("对不起，您输入的【购买商品明细】的格式不正确");
+                        System.out.println("对不起，您输入的#
+# 【购买商品明细】的格式不正确");
                         break;
                     }
                     //下单
@@ -109,7 +116,9 @@ public class UserUI {
                      * 2) 在Order类中添加字段addrId
                      * 3)确认支付：需要进行订单关联地址，如果有地址那么就关联，否则新建地址信息
                      * 4)确认地址是否存在
-                     * 5)如果存在 A 提示用户 "【1】请选择地址信息 【2】新建地址信息"
+                     * 5)如果存在 A 提示用户 "#
+# 【1】请选择地址信息 #
+# 【2】新建地址信息"
                      * 6)如果不存在 B 提示用户 "请录入地址信息:"
                      * 7)在A的条件下，选择地址后，就直接关联地址，下单成功
                      * 8)在B的条件下，录入地址信息后，就直接关联地址，下单成功
@@ -117,7 +126,9 @@ public class UserUI {
                     List<Address> addrList = addressService.queryAll();
                     if (addrList != null && addrList.size() > 0) {
                         // 找到了地址信息
-                        System.out.println("【1】请选择地址信息 【2】新建地址信息");
+                        System.out.println("#
+# 【1】请选择地址信息 #
+# 【2】新建地址信息");
                         opt = sc.nextLine();
                         if (opt.equals("1")) {
                             // 打印 addrList集合对象
@@ -155,7 +166,8 @@ public class UserUI {
                          */
                         orderService.confirmOrder(address, orderNo);
 
-                        System.out.println("恭喜您，下单成功，您的订单信息为：【订单号为：" + orderNo + ",收货人为：" + userName + ",收货人电话为：" + tel + ",收货人地址为：" + addr + "】");
+                        System.out.println("恭喜您，下单成功，您的订单信息为：#
+# 【订单号为：" + orderNo + ",收货人为：" + userName + ",收货人电话为：" + tel + ",收货人地址为：" + addr + "】");
                         // 订单号：，收货人：，收货人电话：，收货人地址：
                     }
 
