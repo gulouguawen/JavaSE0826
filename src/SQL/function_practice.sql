@@ -1,6 +1,65 @@
+-- 自定义函数
+
+# 创建函数
+drop function if exists java0826.getCount;
+create function java0826.getCount()
+    returns int
+    return (select count(id)
+            from java0826.product);
+
+# 调用自定义函数
+select java0826.getCount() as 'product count';
+
+# 一般情况下函数只是执行某个功能
+DROP function if exists procedure_test.transferFuc;
+create function procedure_test.transferFuc(inAccount int, outAccount int, amount double)
+    returns int
+begin
+    -- 记录当前 转出账号的 金额（余额）
+    DECLARE totalDepositOut double;
+
+    -- 记录当前 转入账号的 金额（余额）
+    DECLARE totalDepositIn double;
+
+    -- 转入的账号
+    DECLARE inAccountnum int;
+    select total into totalDepositOut from Account where accountnum = outAccount;
+
+    -- 如果转出账号没有开户 则退出
+    IF totalDepositOut is NULL THEN
+        return -1;
+    END IF;
+
+    -- 如果转出账号的余额不足 则退出
+    IF totalDepositOut < amount THEN
+        return -2;
+    END IF;
+
+    # 到这里 转出账号满足 转出的要求   注意：select into赋值 查询出来的结果一定只有一条记录，多余一条，赋值失败
+    select accountnum into inAccountnum from Account where accountnum = inAccount;
+
+    -- 判断转入账号是否开户
+    IF inAccountnum is null THEN
+        return -3;
+    END IF;
+
+    -- 转出账号的钱开始减少
+    update Account set total = total - amount WHERE accountnum = outaccount;
+
+    -- 转入的账号的钱开始增加
+    update Account set total =total + amount where accountnum = inAccount;
+
+    -- SQL的异常处理
+    return 1;
+end;
+
+select procedure_test.transferFuc(111, 222, 333);
+
+
+-- 内置函数
+
 # 【例6.1】求2，-3.3和-33的绝对值，输入语句如下：
 SELECT ABS(2), ABS(-3.3), ABS(-33);
-
 
 # 【例6.2】返回圆周率值，输入语句如下：
 SELECT pi();
@@ -391,3 +450,5 @@ SELECT CHARSET('string'), CHARSET(CONVERT('string' USING latin1));
 
 # 【例6.108】使用CAST和CONVERT函数进行数据类型的转换，SQL语句如下：
 SELECT CAST(100 AS CHAR(2)), CONVERT('2010-10-01 12:12:12', TIME);
+
+
